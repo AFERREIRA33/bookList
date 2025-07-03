@@ -49,6 +49,9 @@ jobs:
           name: test-report
           path: build/reports/tests/test
 
+      - name: Generate coverage report
+        run: ./gradlew jacocoTestReport
+
       - name: Upload coverage report artifact
         uses: actions/upload-artifact@v4
         with:
