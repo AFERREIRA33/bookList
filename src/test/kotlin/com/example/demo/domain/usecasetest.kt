@@ -1,4 +1,7 @@
-﻿package domain
+﻿package com.example.demo.domain
+import com.example.demo.domain.Book
+import com.example.demo.domain.port
+import com.example.demo.domain.usecase
 import io.kotest.assertions.throwables.shouldThrowWithMessage
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.collections.shouldContainExactlyInAnyOrder
