@@ -19,6 +19,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.get
 import org.springframework.test.web.servlet.post
+import java.lang.IllegalArgumentException
 
 @WebMvcTest(BookController::class)
 class TestController(
@@ -93,5 +94,46 @@ class TestController(
 
         response.response.status shouldBe 500
 
+    }
+
+    // Test integration reserved book
+    test("POST /books/reserve should return 200 when successful") {
+        every { bookService.reserveBook("1984") } returns Unit
+
+        val json = """{ "title": "1984", "author": "Orwell" }"""
+
+        val response = mockMvc.post("/books/reserve") {
+            contentType = MediaType.APPLICATION_JSON
+            content = json
+        }.andReturn()
+
+        response.response.status shouldBe 200
+    }
+
+    test("POST /books/reserve should return 409 when already reserved") {
+        every { bookService.reserveBook("1984") } throws IllegalArgumentException("Déjà réservé")
+
+        val json = """{ "title": "1984", "author": "Orwell" }"""
+
+        val response = mockMvc.post("/books/reserve") {
+            contentType = MediaType.APPLICATION_JSON
+            content = json
+        }.andReturn()
+
+        response.response.status shouldBe 409
+        response.response.contentAsString shouldBe "Déjà réservé"
+    }
+
+    test("POST /books/reserve should return 500 on unknown error") {
+        every { bookService.reserveBook("1984") } throws RuntimeException("Erreur")
+
+        val json = """{ "title": "1984", "author": "Orwell" }"""
+
+        val response = mockMvc.post("/books/reserve") {
+            contentType = MediaType.APPLICATION_JSON
+            content = json
+        }.andReturn()
+
+        response.response.status shouldBe 500
     }
 })

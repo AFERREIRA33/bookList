@@ -12,4 +12,12 @@ class portImpl : port {
     override fun findAll(): List<Book> {
         TODO("Not yet implemented")
     }
+
+    override fun reserve(title: String) {
+        TODO("Not yet implemented")
+    }
+
+    override fun findByTitle(title: String): Book? {
+        TODO("Not yet implemented")
+    }
 }

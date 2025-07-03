@@ -2,6 +2,7 @@
 
 import org.springframework.context.annotation.Bean
 import org.springframework.stereotype.Service
+import kotlin.IllegalArgumentException
 
 
 @Service
@@ -18,5 +19,16 @@ class usecase(private val repository: port) {
     fun getAllBooks() : List<Book> {
 
         return repository.findAll().sortedBy { it.title }
+    }
+
+    fun reserveBook(title : String){
+
+        val bookDB = repository.findByTitle(title)
+            ?: throw IllegalArgumentException("Book not found")
+
+        if (bookDB.reserved) {
+            throw IllegalArgumentException("Book already reserved")
+        }
+        repository.reserve(title)
     }
 }

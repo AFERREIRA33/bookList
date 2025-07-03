@@ -68,4 +68,32 @@ class usecasetest : FunSpec({
         result shouldContainExactlyInAnyOrder storedBooks
     }
 
+    // Test ReservedBook
+    test("should reserve an available book") {
+        val book = Book("1984", "Orwell", reserved = false)
+        every { repository.findByTitle("1984") } returns book
+        every { repository.reserve("1984") } returns Unit
+
+        service.reserveBook("1984")
+
+        verify { repository.reserve("1984") }
+    }
+
+    test("should throw if book is already reserved") {
+        val book = Book("1984", "Orwell", reserved = true)
+        every { repository.findByTitle("1984") } returns book
+
+        shouldThrowWithMessage< IllegalArgumentException>("Book already reserved") {
+            service.reserveBook("1984")
+        }
+    }
+
+    test("should throw if book not found" ){
+        every { repository.findByTitle("Unknown") } returns null
+
+        shouldThrowWithMessage< IllegalArgumentException>("Book not found") {
+            service.reserveBook("Unknown")
+        }
+    }
+
 })
