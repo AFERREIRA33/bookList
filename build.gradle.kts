@@ -60,11 +60,15 @@ dependencies {
 	testIntegrationImplementation("org.springframework.boot:spring-boot-starter-test") {
 		exclude(module = "mockito-core")
 	}
+	testImplementation("org.testcontainers:junit-jupiter:1.19.3")
+	testIntegrationImplementation("org.testcontainers:jdbc-test:1.12.0")
+	testIntegrationImplementation("org.testcontainers:testcontainers:1.19.1")
+	testIntegrationImplementation("io.kotest.extensions:kotest-extensions-testcontainers:2.0.2")
+	testImplementation("org.testcontainers:testcontainers:1.19.3")
 	testIntegrationImplementation("org.testcontainers:postgresql:1.19.1")
 	testIntegrationImplementation("org.testcontainers:jdbc-test:1.12.0")
 	testIntegrationImplementation("org.testcontainers:testcontainers:1.19.1")
 	testIntegrationImplementation("io.kotest.extensions:kotest-extensions-testcontainers:2.0.2")
-
 }
 tasks.test {
 	// ...
