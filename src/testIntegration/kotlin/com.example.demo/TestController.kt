@@ -60,7 +60,7 @@ class TestController(
         }.andReturn()
 
 
-        val json = """[{"title":"Author A","author":"Alpha"},{"title":"Author B","author":"Beta"}]""".trimIndent()
+        val json = """[{"title":"Author A","author":"Alpha","reserved":false},{"title":"Author B","author":"Beta","reserved":false}]""".trimIndent()
         response.response.status shouldBe 200
         response.response.contentAsString shouldBe json
     }
@@ -81,7 +81,8 @@ class TestController(
         val json = """
         {
             "title": "ErrorBook",
-            "author": "Author E"
+            "author": "Author E",
+            "reserved":false
         }
     """.trimIndent()
 

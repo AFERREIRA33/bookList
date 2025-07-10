@@ -12,7 +12,9 @@ import org.testcontainers.containers.PostgreSQLContainer
 import org.springframework.beans.factory.annotation.Autowired
 import org.junit.jupiter.api.TestInstance
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate
+import org.springframework.transaction.annotation.Transactional
 
+@Transactional
 @SpringBootTest
 @ActiveProfiles("testIntegration")
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
@@ -21,7 +23,9 @@ class BookDAOIT @Autowired constructor(
 ) : FunSpec({
 
     test("should save and retrieve a book") {
-        dao.saveBook(Book("Test", "Author"))
+        println("Datasource = " + System.getProperty("spring.datasource.url"))
+
+        dao.save(Book("Test", "Author"))
         val found = dao.findByTitle("Test")
         found shouldNotBe null
         found!!.title shouldBe "Test"
@@ -30,7 +34,7 @@ class BookDAOIT @Autowired constructor(
     }
 
     test("should update reserved status") {
-        dao.saveBook(Book("ToReserve", "Author"))
+        dao.save(Book("ToReserve", "Author"))
         dao.reserve("ToReserve")
         val reservedBook = dao.findByTitle("ToReserve")
         reservedBook!!.reserved shouldBe true
@@ -45,18 +49,12 @@ class BookDAOIT @Autowired constructor(
 
 }) {
     companion object {
-        private val container = PostgreSQLContainer("postgres:13-alpine").apply {
-            withDatabaseName("booktest")
-            withUsername("user")
-            withPassword("password")
-            start()
-        }
-
+        private val container = PostgreSQLContainer<Nothing>("postgres:13-alpine")
         init {
+            container.start()
             System.setProperty("spring.datasource.url", container.jdbcUrl)
             System.setProperty("spring.datasource.username", container.username)
             System.setProperty("spring.datasource.password", container.password)
-            System.setProperty("spring.datasource.driver-class-name", container.driverClassName)
         }
     }
 }
